@@ -8,6 +8,8 @@ Hoje cada frente tem sua cópia de `Ribbon.tsx` (6 cópias, 252–1.815 linhas),
 é a versão única e melhorada dessas peças, com **16 critérios de UI/UX testáveis**
 ([docs/CRITERIOS.md](docs/CRITERIOS.md)). As frentes migram depois, uma por vez.
 
+**Vitrine online:** https://craft-ui-tan.vercel.app (deploy automático a cada push no `main`).
+
 ## Rodar a galeria
 
 ```bash
