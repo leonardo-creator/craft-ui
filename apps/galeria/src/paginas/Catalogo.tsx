@@ -59,7 +59,7 @@ export function Catalogo() {
                     {n || ""}
                   </td>
                 ))}
-                <td className="px-2 py-1 font-mono text-[11px] text-texto-2">{INV.find((i) => i.c === c)?.s.join(", ") || <span className="text-alerta">fase 2: Gráfico</span>}</td>
+                <td className="px-2 py-1 font-mono text-[11px] text-texto-2">{[...new Set(INV.filter((i) => i.c === c).flatMap((i) => i.s))].join(", ") || "—"}</td>
               </tr>
             ))}
           </tbody>

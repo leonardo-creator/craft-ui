@@ -54,7 +54,8 @@ export function Inicio({ ir }: { ir: (p: string) => void }) {
           ["tabela", "Área de trabalho", "Docks com abas, redimensionar, recolher, status.", "area"],
           ["no", "Campos e número de engenharia", "Vírgula, unidade, fração, Enter/Tab/Esc.", "campos"],
           ["abrir", "Diálogo", "Enter/Esc, foco, erro fixo, não-modal.", "dialogo"],
-          ["grafico", "Tabela de dados", "Fixos, unidade no cabeçalho, edição na célula.", "tabela"],
+          ["tabela", "Tabela de dados", "Fixos, unidade no cabeçalho, edição na célula.", "tabela"],
+          ["grafico", "Gráficos e diagramas", "Curvas, esforços, perfil, Gantt, PERT, sparkline.", "graficos"],
           ["vista3d", "App completo", "Tudo junto num app de exemplo.", "app"],
         ].map(([ic, t, d, p]) => (
           <button key={p} onClick={() => ir(p)} className="flex items-start gap-3 border border-linha bg-painel p-3 text-left hover:border-acento-borda hover:bg-acento-suave">

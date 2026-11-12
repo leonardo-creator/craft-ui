@@ -5,7 +5,7 @@ Biblioteca única de componentes + galeria das 7 frentes REA:
 
 Hoje cada frente tem sua cópia de `Ribbon.tsx` (6 cópias, 252–1.815 linhas), `Docks.tsx` (5),
 `Visao3D.tsx` (5), `InputEngenharia.tsx` (5) e `icones.tsx` (6), todas divergentes. Este repositório
-é a versão única e melhorada dessas peças, com **15 critérios de UI/UX testáveis**
+é a versão única e melhorada dessas peças, com **16 critérios de UI/UX testáveis**
 ([docs/CRITERIOS.md](docs/CRITERIOS.md)). As frentes migram depois, uma por vez.
 
 ## Rodar a galeria
@@ -13,7 +13,7 @@ Hoje cada frente tem sua cópia de `Ribbon.tsx` (6 cópias, 252–1.815 linhas),
 ```bash
 npm install
 npm run dev        # http://localhost:5190
-npm test           # parser de engenharia + geometria de encaixe (27 testes)
+npm test           # parser, geometria de encaixe, escalas/gráficos (37 testes)
 npm run build      # typecheck do pacote + build da galeria
 ```
 
@@ -28,8 +28,10 @@ packages/ui/              @craft/ui — o que as frentes importam
   src/docks/              AreaTrabalho (docks), Arvore, GradePropriedades, BarraStatus
   src/tabela/             TabelaDados
   src/viewport/           geometria (encaixe/coordenada), Prancheta2D, Viewport3D, GradeAdaptativa
+  src/graficos/           escalas, GraficoXY, DiagramaBarra, PerfilLongitudinal, Gantt, DiagramaNos, Sparkline
 apps/galeria/             galeria (Vite) — uma página por componente + catálogo das 450 peças + app de exemplo
-docs/CRITERIOS.md         critérios U01–U15
+docs/CRITERIOS.md         critérios U01–U16
+docs/PLANO-MIGRACAO.md    plano passo a passo para migrar as 7 frentes (para outro agente executar)
 ```
 
 ## Destaques
@@ -46,7 +48,12 @@ docs/CRITERIOS.md         critérios U01–U15
 - **InputEngenharia** da BASE COMUM A mantido e melhorado (sufixo de unidade, erro em linha, limites,
   ↑/↓). Corrigido: "mês" não vira mais "m" (metro).
 
+- **Gráficos e diagramas** em SVG puro: curvas com ponto de operação, eixo secundário, esforços N/V/M,
+  perfil longitudinal com PVs, Gantt com arrastar/duração/caminho crítico, PERT/rede, sparkline.
+
 ## Usar numa frente (migração)
+
+Passo a passo completo: [docs/PLANO-MIGRACAO.md](docs/PLANO-MIGRACAO.md).
 
 ```bash
 git submodule add https://github.com/leonardo-creator/craft-ui vendor/craft-ui   # repo privado: a VPS precisa de token/deploy key

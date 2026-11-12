@@ -117,4 +117,11 @@ export const CRITERIOS: Criterio[] = [
     verificar: "grep nas frentes: nenhum Ribbon.tsx/Docks.tsx/Visao3D.tsx/InputEngenharia.tsx/icones.tsx local após a migração.",
     componentes: ["todos"],
   },
+  {
+    id: "U16",
+    titulo: "Gráfico que se lê",
+    regra: "Gráfico ocupa o espaço disponível (sem largura fixa), marcas 1-2-2,5-5 em pt-BR, unidade no título do eixo, mira mostra o valor de TODAS as séries no x do mouse, legenda liga/desliga série, roda = zoom e arrastar = mover (duplo clique volta). Diagramas de esforço seguem a convenção (M no lado tracionado) e rotulam extremos.",
+    verificar: "Passar o mouse na curva: caixa com Q e H das duas séries. Clicar na legenda some a série. Roda no eixo X aproxima; duplo clique volta.",
+    componentes: ["GraficoXY", "DiagramaBarra", "PerfilLongitudinal", "Gantt", "DiagramaNos", "Sparkline"],
+  },
 ];

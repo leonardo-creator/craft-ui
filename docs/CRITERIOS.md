@@ -121,3 +121,11 @@ Componente compartilhado vem do @craft/ui. Proibido copiar para dentro da frente
 **Como verificar:** grep nas frentes: nenhum Ribbon.tsx/Docks.tsx/Visao3D.tsx/InputEngenharia.tsx/icones.tsx local após a migração.
 
 **Componentes:** `todos`
+
+## U16 — Gráfico que se lê
+
+Gráfico ocupa o espaço disponível (sem largura fixa), marcas 1-2-2,5-5 em pt-BR, unidade no título do eixo, mira mostra o valor de TODAS as séries no x do mouse, legenda liga/desliga série, roda = zoom e arrastar = mover (duplo clique volta). Diagramas de esforço seguem a convenção (M no lado tracionado) e rotulam extremos.
+
+**Como verificar:** Passar o mouse na curva: caixa com Q e H das duas séries. Clicar na legenda some a série. Roda no eixo X aproxima; duplo clique volta.
+
+**Componentes:** `GraficoXY`, `DiagramaBarra`, `PerfilLongitudinal`, `Gantt`, `DiagramaNos`, `Sparkline`
