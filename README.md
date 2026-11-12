@@ -31,7 +31,8 @@ packages/ui/              @craft/ui — o que as frentes importam
   src/graficos/           escalas, GraficoXY, DiagramaBarra, PerfilLongitudinal, Gantt, DiagramaNos, Sparkline
 apps/galeria/             galeria (Vite) — uma página por componente + catálogo das 450 peças + app de exemplo
 docs/CRITERIOS.md         critérios U01–U16
-docs/PLANO-MIGRACAO.md    plano passo a passo para migrar as 7 frentes (para outro agente executar)
+docs/PLANO-GALERIA.md     PARTE 1 — próximo trabalho: versões melhoradas das ~386 telas que faltam, na galeria
+docs/PLANO-MIGRACAO.md    PARTE 2 — troca nas frentes (só quando o dono decidir)
 ```
 
 ## Destaques
@@ -53,7 +54,8 @@ docs/PLANO-MIGRACAO.md    plano passo a passo para migrar as 7 frentes (para out
 
 ## Usar numa frente (migração)
 
-Passo a passo completo: [docs/PLANO-MIGRACAO.md](docs/PLANO-MIGRACAO.md).
+Próximo trabalho (outro agente): [docs/PLANO-GALERIA.md](docs/PLANO-GALERIA.md).
+Troca nas frentes, quando o dono decidir: [docs/PLANO-MIGRACAO.md](docs/PLANO-MIGRACAO.md).
 
 ```bash
 git submodule add https://github.com/leonardo-creator/craft-ui vendor/craft-ui   # repo privado: a VPS precisa de token/deploy key

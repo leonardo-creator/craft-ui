@@ -1,4 +1,8 @@
-# Plano de migração das 7 frentes para o @craft/ui
+# Plano de migração das 7 frentes para o @craft/ui (Parte 2)
+
+> ⚠️ **NÃO EXECUTAR AGORA.** Esta parte troca as cópias antigas dentro das frentes pelo @craft/ui.
+> O dono decidiu que a galeria nasce separada e **ele** decide quando trocar. O trabalho atual é a
+> Parte 1: `docs/PLANO-GALERIA.md`. Use este documento só quando o dono pedir a migração.
 
 > **Para quem vai executar (outro modelo/agente):** este documento é autossuficiente.
 > Leia inteiro antes de mexer em qualquer arquivo. Ele diz O QUE fazer, EM QUE ORDEM,

@@ -6,6 +6,7 @@
  */
 import { useMemo, useRef, useState } from "react";
 import { useTamanho } from "./GraficoXY";
+import { useRoda } from "../base/useRoda";
 
 export interface NoDiagrama {
   id: string;
@@ -84,20 +85,23 @@ export function DiagramaNos({
   const v = vista ?? { x: 20, y: 20, k: ajuste };
   const arr = useRef<{ x: number; y: number; vx: number; vy: number } | null>(null);
   const porId = new Map(nos.map((n) => [n.id, n]));
+  const svgRef = useRef<SVGSVGElement>(null);
+  useRoda(svgRef, (e, el) => {
+    e.preventDefault();
+    const r = el.getBoundingClientRect();
+    const mx = e.clientX - r.left;
+    const my = e.clientY - r.top;
+    const k = Math.max(0.2, Math.min(3, v.k * (e.deltaY < 0 ? 1.15 : 1 / 1.15)));
+    setVista({ k, x: mx - ((mx - v.x) * k) / v.k, y: my - ((my - v.y) * k) / v.k });
+  });
 
   return (
     <div ref={ref} className="relative w-full select-none overflow-hidden border border-linha bg-area" style={{ height: altura }}>
       <svg
+        ref={svgRef}
         width={tam.w}
         height={altura}
         className="block cursor-grab active:cursor-grabbing"
-        onWheel={(e) => {
-          const r = (e.currentTarget as SVGSVGElement).getBoundingClientRect();
-          const mx = e.clientX - r.left;
-          const my = e.clientY - r.top;
-          const k = Math.max(0.2, Math.min(3, v.k * (e.deltaY < 0 ? 1.15 : 1 / 1.15)));
-          setVista({ k, x: mx - ((mx - v.x) * k) / v.k, y: my - ((my - v.y) * k) / v.k });
-        }}
         onPointerDown={(e) => {
           if ((e.target as Element).closest("[data-no]")) return;
           arr.current = { x: e.clientX, y: e.clientY, vx: v.x, vy: v.y };

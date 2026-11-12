@@ -13,6 +13,7 @@
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { EntradaCoordenada, teclaIniciaCoordenada, useVistaAtiva } from "./EntradaCoordenada";
+import { useRoda } from "../base/useRoda";
 import { encaixar, formatarPasso, lerCoordenada, passoAdaptativo, type Eixo, type Encaixe, type Vec3 } from "./geometria";
 import type { ModeloBarras } from "./modelo";
 
@@ -178,17 +179,19 @@ export function Prancheta2D({
   const cur = cursor ? paraTela(cursor.ponto[0], cursor.ponto[1]) : null;
   const ini = inicio ? paraTela(inicio[0], inicio[1]) : null;
 
+  useRoda(svg, (e) => {
+    e.preventDefault(); // zoom no desenho sem rolar a página
+    const [px, py] = posEvento(e);
+    const antes = paraMundo(px, py);
+    const escala = Math.max(2, Math.min(5000, vista.escala * (e.deltaY < 0 ? 1.15 : 1 / 1.15)));
+    setVista({ escala, cx: antes[0] - (px - tam.w / 2) / escala, cy: antes[1] + (py - tam.h / 2) / escala });
+  });
+
   return (
     <div ref={caixa} className="relative h-full w-full select-none" onContextMenu={(e) => e.preventDefault()}>
       <svg
         ref={svg}
         className={`h-full w-full ${ferramenta === "barra" ? "cursor-crosshair" : "cursor-default"}`}
-        onWheel={(e) => {
-          const [px, py] = posEvento(e);
-          const antes = paraMundo(px, py);
-          const escala = Math.max(2, Math.min(5000, vista.escala * (e.deltaY < 0 ? 1.15 : 1 / 1.15)));
-          setVista({ escala, cx: antes[0] - (px - tam.w / 2) / escala, cy: antes[1] + (py - tam.h / 2) / escala });
-        }}
         onPointerDown={(e) => {
           if (e.button === 1 || e.button === 2 || espaco.current) {
             pan.current = { x: e.clientX, y: e.clientY, cx: vista.cx, cy: vista.cy };

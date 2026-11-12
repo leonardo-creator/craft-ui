@@ -14,6 +14,7 @@
  */
 import { useMemo, useRef, useState } from "react";
 import { Icone } from "../base/icones";
+import { useRoda } from "../base/useRoda";
 import { dataDoDia, marcasTempo, nivelTempo } from "./escalas";
 
 export interface TarefaGantt {
@@ -82,6 +83,7 @@ export function Gantt({
   const [recolhidos, setRecolhidos] = useState<Set<string>>(new Set());
   const [arrasto, setArrasto] = useState<{ id: string; modo: "mover" | "duracao"; x0: number; ini: number; dur: number; atual: { ini: number; dur: number } } | null>(null);
   const rolagem = useRef<HTMLDivElement>(null);
+  const arrastoRef = useRef<typeof arrasto>(null);
 
   const criticas = useMemo(() => (mostrarCritico ? caminhoCritico(tarefas.filter((t) => !t.resumo)) : new Set<string>()), [tarefas, mostrarCritico]);
 
@@ -112,19 +114,44 @@ export function Gantt({
   function iniciarArrasto(e: React.PointerEvent, t: TarefaGantt, modo: "mover" | "duracao") {
     if (!onAlterar || t.resumo) return;
     e.stopPropagation();
-    (e.target as Element).setPointerCapture(e.pointerId);
-    setArrasto({ id: t.id, modo, x0: e.clientX, ini: t.inicio, dur: t.duracao, atual: { ini: t.inicio, dur: t.duracao } });
+    e.preventDefault();
+    const a = { id: t.id, modo, x0: e.clientX, ini: t.inicio, dur: t.duracao, atual: { ini: t.inicio, dur: t.duracao } };
+    arrastoRef.current = a;
+    setArrasto(a);
+    // Ouve na janela (não depende de captura no <rect> SVG nem do mouse ficar sobre a barra).
+    const mover = (ev: PointerEvent) => moverArrasto(ev);
+    const soltar = (ev: PointerEvent) => {
+      window.removeEventListener("pointermove", mover);
+      window.removeEventListener("pointerup", soltar);
+      soltarArrasto(ev);
+    };
+    window.addEventListener("pointermove", mover);
+    window.addEventListener("pointerup", soltar);
   }
-  function moverArrasto(e: React.PointerEvent) {
-    if (!arrasto) return;
-    const dd = Math.round((e.clientX - arrasto.x0) / pxDia);
-    setArrasto({ ...arrasto, atual: arrasto.modo === "mover" ? { ini: arrasto.ini + dd, dur: arrasto.dur } : { ini: arrasto.ini, dur: Math.max(1, arrasto.dur + dd) } });
+  // O arrasto vive num ref (sempre atual) e o estado só redesenha: num arrasto
+  // rápido o pointerup chega antes do re-render e leria a posição antiga.
+  function moverArrasto(e: { clientX: number }) {
+    const a = arrastoRef.current;
+    if (!a) return;
+    const dd = Math.round((e.clientX - a.x0) / pxDia);
+    const n = { ...a, atual: a.modo === "mover" ? { ini: a.ini + dd, dur: a.dur } : { ini: a.ini, dur: Math.max(1, a.dur + dd) } };
+    arrastoRef.current = n;
+    setArrasto(n);
   }
-  function soltarArrasto() {
-    if (arrasto && (arrasto.atual.ini !== arrasto.ini || arrasto.atual.dur !== arrasto.dur)) onAlterar?.(arrasto.id, arrasto.atual.ini, arrasto.atual.dur);
+  function soltarArrasto(e: { clientX: number }) {
+    moverArrasto(e);
+    const a = arrastoRef.current;
+    if (a && (a.atual.ini !== a.ini || a.atual.dur !== a.dur)) onAlterar?.(a.id, a.atual.ini, a.atual.dur);
+    arrastoRef.current = null;
     setArrasto(null);
   }
   const zoom = (f: number) => setPxDia((p) => Math.max(1.2, Math.min(60, p * f)));
+  // Ctrl+roda = zoom no TEMPO (não no navegador); roda sozinha continua rolando a lista.
+  useRoda(rolagem, (e) => {
+    if (!e.ctrlKey) return;
+    e.preventDefault();
+    zoom(e.deltaY < 0 ? 1.2 : 1 / 1.2);
+  });
   const irHoje = () => rolagem.current?.scrollTo({ left: Math.max(0, X(hoje ?? 0) - 120), behavior: "smooth" });
 
   return (
@@ -162,11 +189,6 @@ export function Gantt({
         ref={rolagem}
         className="relative overflow-auto"
         style={{ height: altura }}
-        onWheel={(e) => {
-          if (!e.ctrlKey) return;
-          e.preventDefault();
-          zoom(e.deltaY < 0 ? 1.2 : 1 / 1.2);
-        }}
       >
         <div className="flex" style={{ width: 320 + largura }}>
           {/* coluna fixa */}
@@ -215,7 +237,7 @@ export function Gantt({
           </div>
 
           {/* área do gráfico */}
-          <div className="relative shrink-0" style={{ width: largura }} onPointerMove={moverArrasto} onPointerUp={soltarArrasto}>
+          <div className="relative shrink-0" style={{ width: largura }}>
             <svg width={largura} height={42 + visiveis.length * ALT} className="block">
               {/* régua */}
               <rect x={0} y={0} width={largura} height={42} fill="var(--cr-painel-2)" />

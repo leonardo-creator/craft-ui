@@ -11,6 +11,7 @@
  *  - `camadaExtra` recebe as escalas para desenhos específicos (PVs do perfil, etc.).
  */
 import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
+import { useRoda } from "../base/useRoda";
 import { dominioBonito, escalaLinear, formatarNumero, interpolar, marcas, passoBonito, type Escala } from "./escalas";
 
 export const CORES_SERIE = ["#2563eb", "#dc2626", "#16a34a", "#d97706", "#7c3aed", "#0891b2", "#db2777", "#4b5563"];
@@ -138,6 +139,7 @@ export function GraficoXY({
   const py = passoBonito(domY[1] - domY[0], Math.max(2, Math.floor(area.h / 45)));
   const fx = formatarX ?? ((v: number) => formatarNumero(v, px));
   const arrasto = useRef<{ x: number; dom: [number, number] } | null>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
 
   function caminho(s: Serie) {
     const pts = s.pontos;
@@ -153,10 +155,23 @@ export function GraficoXY({
 
   const xMira = mira != null ? ex.inversa(mira) : null;
 
+  useRoda(svgRef, (e) => {
+    if (!zoom) return;
+    e.preventDefault();
+    const r = svgRef.current!.getBoundingClientRect();
+    const c = ex.inversa(e.clientX - r.left);
+    const f = e.deltaY < 0 ? 0.8 : 1.25;
+    const n: [number, number] = [c - (c - domX[0]) * f, c + (domX[1] - c) * f];
+    const total = domXTotal[1] - domXTotal[0];
+    if (n[1] - n[0] >= total) setJanela(null);
+    else setJanela(n);
+  });
+
   return (
     <div className="w-full select-none">
       <div ref={ref} className="relative w-full" style={{ height: altura }}>
         <svg
+          ref={svgRef}
           width={tam.w}
           height={altura}
           className="block"
@@ -181,16 +196,7 @@ export function GraficoXY({
           }}
           onPointerUp={() => (arrasto.current = null)}
           onDoubleClick={() => setJanela(null)}
-          onWheel={(e) => {
-            if (!zoom) return;
-            const r = (e.currentTarget as SVGSVGElement).getBoundingClientRect();
-            const c = ex.inversa(e.clientX - r.left);
-            const f = e.deltaY < 0 ? 0.8 : 1.25;
-            const n: [number, number] = [c - (c - domX[0]) * f, c + (domX[1] - c) * f];
-            const total = domXTotal[1] - domXTotal[0];
-            if (n[1] - n[0] >= total) setJanela(null);
-            else setJanela(n);
-          }}
+          
         >
           <defs>
             <clipPath id={clip}>
