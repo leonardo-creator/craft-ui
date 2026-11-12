@@ -142,14 +142,23 @@ export function InputEngenharia({
           }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              e.preventDefault();
-              if (commitar()) onNavegar?.("baixo");
+              // Dentro de um <form> (Dialogo), Enter válido deixa o submit seguir:
+              // commita aqui e o diálogo confirma. Só segura o Enter se o valor
+              // for inválido ou se quem está em volta navega (tabela).
+              const ok = commitar((e.target as HTMLInputElement).value);
+              if (!ok || onNavegar) e.preventDefault();
+              if (ok) onNavegar?.("baixo");
             } else if (e.key === "Tab" && onNavegar) {
               e.preventDefault();
               if (commitar()) onNavegar(e.shiftKey ? "esquerda" : "direita");
             } else if (e.key === "Escape") {
-              e.preventDefault();
-              e.stopPropagation();
+              // 1º Esc desfaz a edição do campo; se não havia edição, o Esc
+              // sobe (o diálogo fecha). Assim Esc nunca "morre" no campo.
+              const editado = texto !== valorOriginal || erro != null;
+              if (editado || onCancelar) {
+                e.preventDefault();
+                e.stopPropagation();
+              }
               setTexto(valorOriginal);
               setErro(null);
               commitado.current = true;

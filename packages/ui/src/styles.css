@@ -34,6 +34,8 @@
   --cr-eixo-y: #16a34a;
   --cr-eixo-z: #2563eb;
   --cr-sombra: 0 8px 28px rgb(15 23 42 / 0.14);
+  --cr-grade-fina: #d1d5db;
+  --cr-grade-forte: #9ca3af;
   color-scheme: light;
 }
 
@@ -57,6 +59,8 @@
   --cr-eixo-y: #4ade80;
   --cr-eixo-z: #60a5fa;
   --cr-sombra: 0 8px 28px rgb(0 0 0 / 0.5);
+  --cr-grade-fina: #52647f;
+  --cr-grade-forte: #8fa0b8;
   color-scheme: dark;
 }
 

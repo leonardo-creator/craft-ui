@@ -21,26 +21,30 @@ function lerHash() {
 
 export function App() {
   const [pag, setPag] = useState(lerHash);
-  const [tema, setTema] = useState<"claro" | "escuro">(() => {
+  const [tema, setTemaEstado] = useState<"claro" | "escuro">(() => {
+    let t: "claro" | "escuro" = "claro";
     try {
-      return (localStorage.getItem("galeria:tema") as "claro" | "escuro") ?? "claro";
+      t = (localStorage.getItem("galeria:tema") as "claro" | "escuro") ?? "claro";
     } catch {
-      return "claro";
+      /* ok */
     }
+    document.documentElement.dataset.tema = t; // síncrono: os tokens já valem no 1º render
+    return t;
   });
+  const setTema = (t: "claro" | "escuro") => {
+    document.documentElement.dataset.tema = t; // antes do render, para o 3D ler as cores certas
+    try {
+      localStorage.setItem("galeria:tema", t);
+    } catch {
+      /* ok */
+    }
+    setTemaEstado(t);
+  };
   useEffect(() => {
     const f = () => setPag(lerHash());
     window.addEventListener("hashchange", f);
     return () => window.removeEventListener("hashchange", f);
   }, []);
-  useEffect(() => {
-    document.documentElement.dataset.tema = tema;
-    try {
-      localStorage.setItem("galeria:tema", tema);
-    } catch {
-      /* ok */
-    }
-  }, [tema]);
   const ir = (p: string) => {
     location.hash = `#/${p}`;
     window.scrollTo(0, 0);
@@ -50,7 +54,7 @@ export function App() {
     inicio: <Inicio ir={ir} />,
     catalogo: <Catalogo />,
     tokens: <Tokens />,
-    vista3d: <Vista3DPag />,
+    vista3d: <Vista3DPag tema={tema} />,
     prancheta: <PranchetaPag />,
     comandos: <ComandosPag />,
     ribbon: <RibbonPag />,
@@ -58,7 +62,7 @@ export function App() {
     dialogo: <DialogoPag />,
     campos: <Campos />,
     tabela: <TabelaPag />,
-    app: <AppCompleto />,
+    app: <AppCompleto tema={tema} />,
   };
 
   return (

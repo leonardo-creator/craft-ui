@@ -20,7 +20,6 @@ import { GradeAdaptativa, type PlanoTrabalho } from "./GradeAdaptativa";
 import { encaixar, formatarPasso, lerCoordenada, orientacao, passoAdaptativo, type Eixo, type Encaixe, type Vec3 } from "./geometria";
 import type { ModeloBarras } from "./modelo";
 
-THREE.Object3D.DEFAULT_UP.set(0, 0, 1);
 
 const EIXOS_PLANO: Record<PlanoTrabalho, Eixo[]> = { XY: [0, 1], XZ: [0, 2], YZ: [1, 2] };
 const NORMAL: Record<PlanoTrabalho, Eixo> = { XY: 2, XZ: 1, YZ: 0 };
@@ -123,6 +122,7 @@ function Cena({
   onCursor,
   ponte,
   onPasso,
+  tema,
 }: Viewport3DProps & {
   ponte: React.RefObject<{ aplicar: (t: string) => string | null; cancelar: () => void } | null>;
   onPasso: (p: number) => void;
@@ -181,8 +181,8 @@ function Cena({
 
   return (
     <>
-      <GradeAdaptativa plano={plano} deslocamento={desloc} onPasso={onPasso} />
-      {plano !== "XY" && <GradeAdaptativa plano="XY" opacidade={0.35} />}
+      <GradeAdaptativa plano={plano} deslocamento={desloc} onPasso={onPasso} tema={tema} />
+      {plano !== "XY" && <GradeAdaptativa plano="XY" opacidade={0.35} tema={tema} />}
       {/* superfície invisível para capturar o ponteiro no plano de trabalho */}
       <mesh
         visible={false}

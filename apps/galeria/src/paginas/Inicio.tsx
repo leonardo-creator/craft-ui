@@ -83,7 +83,8 @@ export function Inicio({ ir }: { ir: (p: string) => void }) {
       </div>
 
       <h2 className="mt-7 text-[15px] font-semibold">Como uma frente vai usar (na migração)</h2>
-      <pre className="mt-2 overflow-auto border border-linha bg-painel p-3 font-mono text-[11.5px]">{`npm i github:leonardo-creator/craft-ui#path:packages/ui   # ou workspace/git submodule
+      <pre className="mt-2 overflow-auto border border-linha bg-painel p-3 font-mono text-[11.5px]">{`git submodule add https://github.com/leonardo-creator/craft-ui vendor/craft-ui   # repo privado: VPS precisa de token/deploy key
+npm i ./vendor/craft-ui/packages/ui          # (ou pnpm: "@craft/ui": "github:leonardo-creator/craft-ui#path:packages/ui")
 
 /* app.css */
 @import "tailwindcss";

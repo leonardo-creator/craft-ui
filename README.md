@@ -48,6 +48,12 @@ docs/CRITERIOS.md         critérios U01–U15
 
 ## Usar numa frente (migração)
 
+```bash
+git submodule add https://github.com/leonardo-creator/craft-ui vendor/craft-ui   # repo privado: a VPS precisa de token/deploy key
+npm i ./vendor/craft-ui/packages/ui
+# pnpm também aceita: "@craft/ui": "github:leonardo-creator/craft-ui#path:packages/ui"
+```
+
 ```css
 /* app.css */
 @import "tailwindcss";

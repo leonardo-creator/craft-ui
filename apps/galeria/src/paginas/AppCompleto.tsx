@@ -28,7 +28,7 @@ import { Viewport3DLazy as Viewport3D } from "./Editores";
 
 const fmt = (v: number) => v.toFixed(2).replace(".", ",");
 
-export function AppCompleto() {
+export function AppCompleto({ tema }: { tema: "claro" | "escuro" }) {
   const [modelo, setModelo] = useState<ModeloBarras>(PORTICO_EXEMPLO);
   const [ferr, setFerr] = useState<"barra" | "selecionar">("selecionar");
   const [plano, setPlano] = useState<"XY" | "XZ" | "YZ">("XZ");
@@ -148,7 +148,7 @@ export function AppCompleto() {
         >
           <Suspense fallback={<div className="p-4 text-[12px] text-texto-3">Carregando 3D…</div>}>
             <Viewport3D
-              key={document.documentElement.dataset.tema ?? "claro"}
+              key={tema}
               modelo={modelo}
               onChange={setModelo}
               ferramenta={ferr}
@@ -159,7 +159,7 @@ export function AppCompleto() {
               selecionada={sel}
               onSelecionar={setSel}
               onCursor={setInfo}
-              tema={document.documentElement.dataset.tema === "escuro" ? "escuro" : "claro"}
+              tema={tema}
             />
           </Suspense>
         </AreaTrabalho>

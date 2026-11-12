@@ -263,7 +263,7 @@ export function PranchetaPag() {
   );
 }
 
-export function Vista3DPag() {
+export function Vista3DPag({ tema }: { tema: "claro" | "escuro" }) {
   const [modelo, setModelo] = useState<ModeloBarras>(PORTICO_EXEMPLO);
   const [plano, setPlano] = useState<"XY" | "XZ" | "YZ">("XZ");
   const [trava, setTrava] = useState<Eixo | null>(null);
@@ -271,7 +271,6 @@ export function Vista3DPag() {
   const [guias, setGuias] = useState(true);
   const [sel, setSel] = useState<number | null>(null);
   const [info, setInfo] = useState<InfoCursor>(null);
-  const tema = typeof document !== "undefined" && document.documentElement.dataset.tema === "escuro" ? "escuro" : "claro";
   return (
     <Pagina
       titulo="Vista 3D + desenho de barras (em pé, deitada, inclinada)"

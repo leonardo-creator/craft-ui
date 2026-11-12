@@ -30,7 +30,7 @@ void main(){
   float fade = 1.-smoothstep(uPasso*25., uPasso*70., d);
   float fina = linha(p,uPasso), forte = linha(p,uPasso*10.);
   vec3 cor = mix(uCorFina, uCorForte, forte);
-  float a = max(fina*.45, forte*.8);
+  float a = max(fina*.6, forte*.9);
   float ea = 1.-min(abs(p.y)/fwidth(p.y),1.); // eixo ao longo do 1º eixo do plano
   float eb = 1.-min(abs(p.x)/fwidth(p.x),1.);
   cor = mix(cor,uCorA,ea); cor = mix(cor,uCorB,eb);
@@ -51,18 +51,21 @@ export function GradeAdaptativa({
   deslocamento = 0,
   opacidade = 1,
   onPasso,
+  tema,
 }: {
   plano?: PlanoTrabalho;
   /** Posição do plano no eixo normal (ex.: plano XZ em y = 5). */
   deslocamento?: number;
   opacidade?: number;
   onPasso?: (passo: number) => void;
+  /** Muda as cores (lidas dos tokens --cr-grade-*) quando o tema troca. */
+  tema?: string;
 }) {
   const { camera, controls } = useThree();
   const ultimo = useRef(0);
   const mat = useMemo(() => {
-    const fina = new THREE.Color(cssVar("--cr-linha-forte", "#d1d5db"));
-    const forte = new THREE.Color(cssVar("--cr-texto-3", "#9ca3af"));
+    const fina = new THREE.Color(cssVar("--cr-grade-fina", "#d1d5db"));
+    const forte = new THREE.Color(cssVar("--cr-grade-forte", "#9ca3af"));
     const ex = new THREE.Color(cssVar("--cr-eixo-x", "#dc2626"));
     const ey = new THREE.Color(cssVar("--cr-eixo-y", "#16a34a"));
     const ez = new THREE.Color(cssVar("--cr-eixo-z", "#2563eb"));
@@ -85,7 +88,7 @@ export function GradeAdaptativa({
       },
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [plano]);
+  }, [plano, tema]);
   mat.uniforms.uOpacidade.value = opacidade;
 
   useFrame(() => {
