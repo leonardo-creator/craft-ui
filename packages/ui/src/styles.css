@@ -1,0 +1,95 @@
+/*
+ * @craft/ui — tokens e estilos base.
+ *
+ * Uso no app (Tailwind 4):
+ *   @import "tailwindcss";
+ *   @import "@craft/ui/styles.css";
+ *
+ * O @source abaixo faz o Tailwind do app enxergar as classes usadas
+ * dentro do pacote. Tema escuro: <html data-tema="escuro">.
+ * Base: "Technical Engineering Workbench" (frente 04) + tema escuro.
+ */
+@source "./";
+
+:root {
+  --cr-fundo: #f3f4f6;
+  --cr-painel: #ffffff;
+  --cr-painel-2: #f9fafb;
+  --cr-area: #fafafa;
+  --cr-linha: #e5e7eb;
+  --cr-linha-forte: #d1d5db;
+  --cr-texto: #111827;
+  --cr-texto-2: #4b5563;
+  --cr-texto-3: #9ca3af;
+  --cr-acento: #2563eb;
+  --cr-acento-suave: #eff6ff;
+  --cr-acento-borda: #bfdbfe;
+  --cr-sucesso: #16a34a;
+  --cr-alerta: #d97706;
+  --cr-erro: #dc2626;
+  --cr-erro-suave: #fef2f2;
+  --cr-contexto: #7c3aed;
+  --cr-contexto-suave: #f5f3ff;
+  --cr-eixo-x: #dc2626;
+  --cr-eixo-y: #16a34a;
+  --cr-eixo-z: #2563eb;
+  --cr-sombra: 0 8px 28px rgb(15 23 42 / 0.14);
+  color-scheme: light;
+}
+
+:root[data-tema="escuro"] {
+  --cr-fundo: #0b0f17;
+  --cr-painel: #111827;
+  --cr-painel-2: #0f1520;
+  --cr-area: #0d131d;
+  --cr-linha: #1f2937;
+  --cr-linha-forte: #374151;
+  --cr-texto: #e5e7eb;
+  --cr-texto-2: #9ca3af;
+  --cr-texto-3: #6b7280;
+  --cr-acento: #3b82f6;
+  --cr-acento-suave: #172554;
+  --cr-acento-borda: #1e40af;
+  --cr-erro-suave: #2a1215;
+  --cr-contexto: #a78bfa;
+  --cr-contexto-suave: #1e1b3a;
+  --cr-eixo-x: #f87171;
+  --cr-eixo-y: #4ade80;
+  --cr-eixo-z: #60a5fa;
+  --cr-sombra: 0 8px 28px rgb(0 0 0 / 0.5);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-fundo: var(--cr-fundo);
+  --color-painel: var(--cr-painel);
+  --color-painel-2: var(--cr-painel-2);
+  --color-area: var(--cr-area);
+  --color-linha: var(--cr-linha);
+  --color-linha-forte: var(--cr-linha-forte);
+  --color-texto: var(--cr-texto);
+  --color-texto-2: var(--cr-texto-2);
+  --color-texto-3: var(--cr-texto-3);
+  --color-acento: var(--cr-acento);
+  --color-acento-suave: var(--cr-acento-suave);
+  --color-acento-borda: var(--cr-acento-borda);
+  --color-sucesso: var(--cr-sucesso);
+  --color-alerta: var(--cr-alerta);
+  --color-erro: var(--cr-erro);
+  --color-erro-suave: var(--cr-erro-suave);
+  --color-contexto: var(--cr-contexto);
+  --color-contexto-suave: var(--cr-contexto-suave);
+  --color-eixo-x: var(--cr-eixo-x);
+  --color-eixo-y: var(--cr-eixo-y);
+  --color-eixo-z: var(--cr-eixo-z);
+  --font-sans: "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Cascadia Mono", Consolas, monospace;
+  --shadow-flutuante: var(--cr-sombra);
+}
+
+@layer base {
+  html, body { background: var(--cr-fundo); color: var(--cr-texto); }
+  body { font-family: var(--font-sans); font-size: 13px; line-height: 1.4; }
+  :focus-visible { outline: 2px solid var(--cr-acento); outline-offset: 1px; }
+  kbd { font-family: var(--font-mono); font-size: 11px; border: 1px solid var(--cr-linha-forte); border-bottom-width: 2px; padding: 0 4px; background: var(--cr-painel); }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "craft-ui-monorepo",
+  "private": true,
+  "type": "module",
+  "workspaces": ["packages/*", "apps/*"],
+  "scripts": {
+    "dev": "npm run dev -w @craft/galeria",
+    "build": "npm run typecheck -w @craft/ui && npm run build -w @craft/galeria",
+    "test": "npm run test -w @craft/ui",
+    "typecheck": "npm run typecheck -w @craft/ui && npm run typecheck -w @craft/galeria"
+  }
+}
