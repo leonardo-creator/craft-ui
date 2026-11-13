@@ -5,7 +5,7 @@ Biblioteca única de componentes + galeria das 7 frentes REA:
 
 Hoje cada frente tem sua cópia de `Ribbon.tsx` (6 cópias, 252–1.815 linhas), `Docks.tsx` (5),
 `Visao3D.tsx` (5), `InputEngenharia.tsx` (5) e `icones.tsx` (6), todas divergentes. Este repositório
-é a versão única e melhorada dessas peças, com **16 critérios de UI/UX testáveis**
+é a versão única e melhorada dessas peças, com **17 critérios de UI/UX testáveis**
 ([docs/CRITERIOS.md](docs/CRITERIOS.md)). As frentes migram depois, uma por vez.
 
 **Vitrine online:** https://craft-ui-tan.vercel.app (deploy automático a cada push no `main`).
@@ -15,7 +15,7 @@ Hoje cada frente tem sua cópia de `Ribbon.tsx` (6 cópias, 252–1.815 linhas),
 ```bash
 npm install
 npm run dev        # http://localhost:5190
-npm test           # parser, geometria de encaixe, escalas/gráficos (37 testes)
+npm test           # parser, geometria de encaixe, escalas/gráficos (41 testes)
 npm run build      # typecheck do pacote + build da galeria
 ```
 
@@ -32,7 +32,7 @@ packages/ui/              @craft/ui — o que as frentes importam
   src/viewport/           geometria (encaixe/coordenada), Prancheta2D, Viewport3D, GradeAdaptativa
   src/graficos/           escalas, GraficoXY, DiagramaBarra, PerfilLongitudinal, Gantt, DiagramaNos, Sparkline
 apps/galeria/             galeria (Vite) — uma página por componente + catálogo das 450 peças + app de exemplo
-docs/CRITERIOS.md         critérios U01–U16
+docs/CRITERIOS.md         critérios U01–U17
 docs/PLANO-GALERIA.md     PARTE 1 — próximo trabalho: versões melhoradas das ~386 telas que faltam, na galeria
 docs/PLANO-MIGRACAO.md    PARTE 2 — troca nas frentes (só quando o dono decidir)
 ```

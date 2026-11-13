@@ -35,6 +35,11 @@ export interface DialogoProps {
   /** Botões extras à esquerda do rodapé (ex.: "Padrões"). */
   rodapeEsquerda?: ReactNode;
   confirmarDesabilitado?: boolean;
+  /**
+   * Ação destrutiva (excluir, apagar resultados): botão de confirmar vermelho e
+   * foco inicial em Cancelar — Enter sozinho nunca destrói nada.
+   */
+  perigo?: boolean;
 }
 
 const LARGURAS = { p: 360, m: 520, g: 760 };
@@ -54,6 +59,7 @@ export function Dialogo({
   id,
   rodapeEsquerda,
   confirmarDesabilitado,
+  perigo,
 }: DialogoProps) {
   const caixa = useRef<HTMLFormElement>(null);
   const idTitulo = useId();
@@ -65,14 +71,14 @@ export function Dialogo({
     if (!aberto) return;
     const anterior = document.activeElement as HTMLElement | null;
     const t = setTimeout(() => {
-      const el = caixa.current?.querySelector<HTMLElement>("[autofocus], input, select, textarea, button:not([data-fechar])");
-      el?.focus();
+      const sel = perigo ? "[data-cancelar]" : "[autofocus], input, select, textarea, button:not([data-fechar])";
+      caixa.current?.querySelector<HTMLElement>(sel)?.focus();
     }, 0);
     return () => {
       clearTimeout(t);
       anterior?.focus?.();
     };
-  }, [aberto]);
+  }, [aberto, perigo]);
 
   if (!aberto) return null;
 
@@ -98,6 +104,8 @@ export function Dialogo({
 
   function enviar(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
+    // Em diálogo perigoso, Enter só confirma com o foco no próprio botão
+    if (perigo && !(document.activeElement as HTMLElement | null)?.hasAttribute("data-confirmar")) return;
     if (!confirmarDesabilitado) onConfirmar?.();
   }
 
@@ -153,11 +161,11 @@ export function Dialogo({
       <footer className="flex items-center gap-2 border-t border-linha px-3 py-2">
         {rodapeEsquerda}
         <span className="flex-1" />
-        <Botao type="button" onClick={onFechar}>
+        <Botao type="button" data-cancelar onClick={onFechar}>
           {rotuloCancelar}
         </Botao>
         {onConfirmar && (
-          <Botao type="submit" variante="primario" disabled={confirmarDesabilitado}>
+          <Botao type="submit" data-confirmar variante={perigo ? "perigo" : "primario"} disabled={confirmarDesabilitado}>
             {rotuloConfirmar}
           </Botao>
         )}

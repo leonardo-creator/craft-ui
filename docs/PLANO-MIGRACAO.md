@@ -26,8 +26,8 @@
   | 08 | CYPE 3D | CypeCraft | `fronts/08/repo/app` | **React 18 / TW 3 / Vite 5** ← atrasada |
 
 - O repositório **`leonardo-creator/craft-ui`** (privado) contém o pacote `@craft/ui` (em `packages/ui`) e a galeria (`apps/galeria`). Ele já tem versão única e melhorada de: comandos (barra, ribbon, paleta Ctrl+K, menu de contexto), diálogo, campos/InputEngenharia, área de trabalho/docks, árvore, propriedades, tabela, prancheta 2D, vista 3D com desenho de barras, e **gráficos** (GraficoXY, DiagramaBarra, PerfilLongitudinal, Gantt, DiagramaNos, Sparkline).
-- **Rode a galeria primeiro** (`npm install && npm run dev` → `http://localhost:5190`). Cada página mostra o componente, os critérios U01–U16 que ele cumpre e o código de uso. O **Catálogo** lista os 450 componentes atuais e qual peça do @craft/ui assume cada um — é o seu mapa.
-- Critérios de aceite de UX: `docs/CRITERIOS.md` (U01–U16).
+- **Rode a galeria primeiro** (`npm install && npm run dev` → `http://localhost:5190`). Cada página mostra o componente, os critérios U01–U17 que ele cumpre e o código de uso. O **Catálogo** lista os 450 componentes atuais e qual peça do @craft/ui assume cada um — é o seu mapa.
+- Critérios de aceite de UX: `docs/CRITERIOS.md` (U01–U17).
 
 ## 1. Regras que NÃO se negociam
 
@@ -113,7 +113,7 @@ Cada etapa = 1 branch, 1 PR, testes verdes. Use o **Catálogo** da galeria filtr
 ### Etapa G — Limpeza (U15)
 - `grep -rlE "Ribbon.tsx|Docks.tsx|Visao3D.tsx|InputEngenharia.tsx|icones.tsx|parseEngenharia.ts" src` → vazio.
 - Remover CSS morto da frente que só servia aos componentes antigos.
-- **Aceite final da frente:** placar ≥ `antes.txt`, build Tauri ok (via fila), os 16 critérios conferidos pelo roteiro da galeria, prints antes/depois anexados ao PR.
+- **Aceite final da frente:** placar ≥ `antes.txt`, build Tauri ok (via fila), os 17 critérios conferidos pelo roteiro da galeria, prints antes/depois anexados ao PR.
 
 ## 5. Etapa 08-0 — Upgrade da frente 08 (antes da migração dela)
 - React 18 → 19, Tailwind 3 → 4 (`@tailwindcss/vite`, remover `tailwind.config.js`/PostCSS, converter `@tailwind` para `@import "tailwindcss"`), Vite 5 → 7, @vitejs/plugin-react → 5, TypeScript ~5.9.

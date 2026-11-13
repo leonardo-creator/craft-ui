@@ -88,7 +88,7 @@ Enter confirma, Esc cancela, foco preso e devolvido, erro em faixa fixa acima do
 
 **Como verificar:** Percorrer a árvore e editar uma célula da tabela sem tocar no mouse.
 
-**Componentes:** `Arvore`, `TabelaDados`, `PaletaComandos`, `Dialogo`
+**Componentes:** `Arvore`, `TabelaDados`, `PaletaComandos`, `Dialogo`, `Segmentado`, `MenuContexto`
 
 ## U12 — Tabela legível
 
@@ -129,3 +129,11 @@ Gráfico ocupa o espaço disponível (sem largura fixa), marcas 1-2-2,5-5 em pt-
 **Como verificar:** Passar o mouse na curva: caixa com Q e H das duas séries. Clicar na legenda some a série. Roda no eixo X aproxima; duplo clique volta.
 
 **Componentes:** `GraficoXY`, `DiagramaBarra`, `PerfilLongitudinal`, `Gantt`, `DiagramaNos`, `Sparkline`
+
+## U17 — Retorno sem silêncio
+
+Toda gravação que falha avisa (aviso de erro, fica até fechar ou 7 s) e a tela volta ao estado real — nunca fica mostrando um valor que não foi salvo. Ação reversível oferece 'Desfazer' no aviso em vez de perguntar; ação destrutiva pergunta em Diálogo perigoso (botão vermelho, foco em Cancelar, Enter sozinho não destrói).
+
+**Como verificar:** Derrubar a rede e mudar um campo: aviso de erro aparece e o valor volta. Excluir: diálogo abre com foco em Cancelar; Enter não exclui.
+
+**Componentes:** `Avisos`, `avisar`, `Dialogo`, `MenuContexto`

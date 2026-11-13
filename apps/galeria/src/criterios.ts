@@ -87,7 +87,7 @@ export const CRITERIOS: Criterio[] = [
     titulo: "Teclado completo",
     regra: "Árvore (↑↓→←), tabela (Enter/Tab), paleta e diálogos funcionam só no teclado; foco sempre visível.",
     verificar: "Percorrer a árvore e editar uma célula da tabela sem tocar no mouse.",
-    componentes: ["Arvore", "TabelaDados", "PaletaComandos", "Dialogo"],
+    componentes: ["Arvore", "TabelaDados", "PaletaComandos", "Dialogo", "Segmentado", "MenuContexto"],
   },
   {
     id: "U12",
@@ -123,5 +123,12 @@ export const CRITERIOS: Criterio[] = [
     regra: "Gráfico ocupa o espaço disponível (sem largura fixa), marcas 1-2-2,5-5 em pt-BR, unidade no título do eixo, mira mostra o valor de TODAS as séries no x do mouse, legenda liga/desliga série, roda = zoom e arrastar = mover (duplo clique volta). Diagramas de esforço seguem a convenção (M no lado tracionado) e rotulam extremos.",
     verificar: "Passar o mouse na curva: caixa com Q e H das duas séries. Clicar na legenda some a série. Roda no eixo X aproxima; duplo clique volta.",
     componentes: ["GraficoXY", "DiagramaBarra", "PerfilLongitudinal", "Gantt", "DiagramaNos", "Sparkline"],
+  },
+  {
+    id: "U17",
+    titulo: "Retorno sem silêncio",
+    regra: "Toda gravação que falha avisa (aviso de erro, fica até fechar ou 7 s) e a tela volta ao estado real — nunca fica mostrando um valor que não foi salvo. Ação reversível oferece 'Desfazer' no aviso em vez de perguntar; ação destrutiva pergunta em Diálogo perigoso (botão vermelho, foco em Cancelar, Enter sozinho não destrói).",
+    verificar: "Derrubar a rede e mudar um campo: aviso de erro aparece e o valor volta. Excluir: diálogo abre com foco em Cancelar; Enter não exclui.",
+    componentes: ["Avisos", "avisar", "Dialogo", "MenuContexto"],
   },
 ];

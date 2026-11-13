@@ -3,7 +3,7 @@
  * direita, ajuda/erro abaixo — o mesmo grid em todos os diálogos das 7 frentes,
  * para o olho achar o campo sempre no mesmo lugar.
  */
-import { useId, type ButtonHTMLAttributes, type ReactNode, type SelectHTMLAttributes } from "react";
+import { useId, useRef, type ButtonHTMLAttributes, type ReactNode, type SelectHTMLAttributes } from "react";
 import { Icone, type NomeIcone } from "./icones";
 
 export function Campo({
@@ -91,19 +91,33 @@ export function Segmentado<T extends string>({
   valor,
   opcoes,
   onChange,
+  rotulo,
 }: {
   valor: T;
   opcoes: { valor: T; rotulo: ReactNode; titulo?: string }[];
   onChange: (v: T) => void;
+  /** aria-label do grupo (U11). */
+  rotulo?: string;
 }) {
+  const grupo = useRef<HTMLDivElement>(null);
+  // ←/→ trocam a opção, como num radiogroup nativo (U11)
+  function tecla(e: React.KeyboardEvent) {
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    e.preventDefault();
+    const i = opcoes.findIndex((o) => o.valor === valor);
+    const prox = opcoes[(i + (e.key === "ArrowRight" ? 1 : opcoes.length - 1)) % opcoes.length];
+    onChange(prox.valor);
+    setTimeout(() => grupo.current?.querySelector<HTMLElement>("[aria-checked='true']")?.focus(), 0);
+  }
   return (
-    <div role="radiogroup" className="inline-flex border border-linha-forte bg-painel">
+    <div ref={grupo} role="radiogroup" aria-label={rotulo} onKeyDown={tecla} className="inline-flex border border-linha-forte bg-painel">
       {opcoes.map((o) => (
         <button
           key={o.valor}
           type="button"
           role="radio"
           aria-checked={o.valor === valor}
+          tabIndex={o.valor === valor ? 0 : -1}
           title={o.titulo}
           onClick={() => onChange(o.valor)}
           className={`h-7 border-r border-linha px-2.5 text-[12px] last:border-r-0 ${

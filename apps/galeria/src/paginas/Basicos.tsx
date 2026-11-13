@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Alternar, Botao, Campo, Dialogo, GrupoCampos, ICONES, Icone, InputEngenharia, Segmentado, Selecao, TabelaDados, type ColunaTabela, type NomeIcone } from "@craft/ui";
+import { Alternar, Avisos, Botao, Campo, Dialogo, GrupoCampos, ICONES, Icone, InputEngenharia, MenuContexto, Segmentado, Selecao, TabelaDados, avisar, type ColunaTabela, type NomeIcone } from "@craft/ui";
 import { Demo, Pagina } from "../Pagina";
 
 export function Tokens() {
@@ -232,6 +232,81 @@ export function TabelaPag() {
         destaque={(l) => (l.util > 1 ? "critico" : null)}
         onEditar={(id, c, v) => setLinhas((ls) => ls.map((l) => (l.id === id ? { ...l, [c]: v } : l)))}
       />
+    </Pagina>
+  );
+}
+
+type StatusDemo = "ativo" | "andamento" | "feito" | "bloqueado";
+const ROT_STATUS: Record<StatusDemo, string> = { ativo: "Ativo", andamento: "Em andamento", feito: "Concluído", bloqueado: "Bloqueado" };
+
+export function AvisosPag() {
+  const [status, setStatus] = useState<StatusDemo>("ativo");
+  const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
+  const [excluir, setExcluir] = useState(false);
+  const [itens, setItens] = useState(["Fundação", "Pilares", "Laje"]);
+  const remover = (nome: string) => {
+    setItens((l) => l.filter((x) => x !== nome));
+    avisar(`"${nome}" removido.`, { acao: { rotulo: "Desfazer", executar: () => setItens((l) => [...l, nome]) } });
+  };
+  return (
+    <Pagina
+      titulo="Avisos e menus"
+      resumo="Retorno de ação sem interromper: aviso (toast) de sucesso/erro com 'Desfazer', menu de contexto com itens avulsos (sem registro de comandos) e diálogo perigoso para exclusão. Nasceu da migração do TaskFlow, onde gravação que falhava ficava silenciosa."
+      componentes={["Avisos", "MenuContexto", "Dialogo", "Segmentado"]}
+      criterios={["U17", "U10", "U11"]}
+      uso={`// raiz do app, uma vez
+<Avisos />
+
+// qualquer lugar
+avisar("Não foi possível salvar (500).", { tipo: "erro" });
+avisar("Removido.", { acao: { rotulo: "Desfazer", executar: desfazer } });
+
+<MenuContexto x={x} y={y} onFechar={fechar} itens={[
+  { id: "a", rotulo: "Ativo", marcado: true, executar: … }, "-",
+  { id: "del", rotulo: "Excluir…", icone: "apagar", perigo: true, executar: … },
+]} />
+
+<Dialogo perigo aberto titulo="Excluir?" rotuloConfirmar="Excluir" onConfirmar={…} onFechar={…} />`}
+    >
+      <Avisos />
+      <Demo className="flex flex-wrap items-center gap-3 p-4">
+        <Botao onClick={() => avisar("Alterações salvas.", { tipo: "sucesso" })}>Aviso de sucesso</Botao>
+        <Botao onClick={() => avisar("Não foi possível salvar (500). Recarregando do servidor.", { tipo: "erro" })}>Aviso de erro</Botao>
+        <span className="text-[12px] text-texto-3">Clicar 2× na mesma mensagem não empilha.</span>
+      </Demo>
+      <Demo className="flex flex-wrap items-center gap-3 p-4">
+        <span className="text-[12px] text-texto-2">Status:</span>
+        <Segmentado<StatusDemo> rotulo="Status" valor={status} onChange={setStatus}
+          opcoes={(Object.keys(ROT_STATUS) as StatusDemo[]).map((v) => ({ valor: v, rotulo: ROT_STATUS[v] }))} />
+        <Botao onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); setMenu({ x: r.left, y: r.bottom + 4 }); }}>
+          {ROT_STATUS[status]} ▾
+        </Botao>
+        <span className="text-[12px] text-texto-3">←/→ no segmentado; ↑/↓ e Enter no menu; botão direito na lista abaixo.</span>
+      </Demo>
+      <Demo className="p-4">
+        <ul className="divide-y divide-linha border border-linha bg-painel">
+          {itens.map((n) => (
+            <li key={n} className="flex items-center justify-between px-3 py-1.5 text-[12px]"
+              onContextMenu={(e) => { e.preventDefault(); setMenu({ x: e.clientX, y: e.clientY }); }}>
+              {n}
+              <Botao variante="fantasma" icone="apagar" onClick={() => remover(n)}>Remover</Botao>
+            </li>
+          ))}
+        </ul>
+        <div className="mt-2"><Botao variante="perigo" icone="apagar" onClick={() => setExcluir(true)}>Excluir tudo…</Botao></div>
+      </Demo>
+      {menu && (
+        <MenuContexto x={menu.x} y={menu.y} onFechar={() => setMenu(null)} rotulo="Status"
+          itens={[
+            ...(Object.keys(ROT_STATUS) as StatusDemo[]).map((v) => ({ id: v, rotulo: ROT_STATUS[v], marcado: v === status, executar: () => setStatus(v) })),
+            "-",
+            { id: "del", rotulo: "Excluir tudo…", icone: "apagar", perigo: true, executar: () => setExcluir(true) },
+          ]} />
+      )}
+      <Dialogo perigo aberto={excluir} titulo="Excluir todos os itens?" subtitulo="Não dá para desfazer." rotuloConfirmar="Excluir"
+        onFechar={() => setExcluir(false)} onConfirmar={() => { setItens([]); setExcluir(false); }}>
+        <p className="text-[12px] text-texto-2">O foco começa em Cancelar: Enter sozinho não exclui.</p>
+      </Dialogo>
     </Pagina>
   );
 }

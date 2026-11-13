@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Icone, type NomeIcone } from "@craft/ui";
 import { Inicio } from "./paginas/Inicio";
 import { Catalogo } from "./paginas/Catalogo";
-import { Campos, DialogoPag, TabelaPag, Tokens } from "./paginas/Basicos";
+import { AvisosPag, Campos, DialogoPag, TabelaPag, Tokens } from "./paginas/Basicos";
 import { AreaPag, ComandosPag, PranchetaPag, RibbonPag, Vista3DPag } from "./paginas/Editores";
 import { AppCompleto } from "./paginas/AppCompleto";
 import { GraficosPag } from "./paginas/Graficos";
@@ -11,7 +11,7 @@ const NAV: { grupo: string; itens: [string, string, NomeIcone][] }[] = [
   { grupo: "Visão geral", itens: [["inicio", "Início e critérios", "ajuda"], ["catalogo", "Catálogo das 7 frentes", "tabela"], ["tokens", "Tokens e ícones", "camadas"]] },
   { grupo: "Desenho", itens: [["vista3d", "Vista 3D + barras", "vista3d"], ["prancheta", "Prancheta 2D", "planta"]] },
   { grupo: "Comandos", itens: [["comandos", "Barra de ferramentas", "config"], ["ribbon", "Ribbon", "camadas"]] },
-  { grupo: "Estrutura de tela", itens: [["area", "Área de trabalho", "grade"], ["dialogo", "Diálogo", "abrir"]] },
+  { grupo: "Estrutura de tela", itens: [["area", "Área de trabalho", "grade"], ["dialogo", "Diálogo", "abrir"], ["avisos", "Avisos e menus", "alerta"]] },
   { grupo: "Dados", itens: [["campos", "Campos e números", "no"], ["tabela", "Tabela de dados", "tabela"], ["graficos", "Gráficos e diagramas", "grafico"]] },
   { grupo: "Exemplo", itens: [["app", "App completo", "vista3d"]] },
 ];
@@ -61,6 +61,7 @@ export function App() {
     ribbon: <RibbonPag />,
     area: <AreaPag />,
     dialogo: <DialogoPag />,
+    avisos: <AvisosPag />,
     campos: <Campos />,
     tabela: <TabelaPag />,
     graficos: <GraficosPag />,

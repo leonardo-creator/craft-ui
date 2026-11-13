@@ -122,6 +122,11 @@ export function ProvedorComandos({ comandos, children }: { comandos: Comando[]; 
   return <Contexto.Provider value={valor}>{children}</Contexto.Provider>;
 }
 
+/** Igual a useComandos, mas devolve null fora de <ProvedorComandos> (para quem também aceita itens soltos). */
+export function useComandosOpcional(): Ctx | null {
+  return useContext(Contexto);
+}
+
 export function useComandos(): Ctx {
   const c = useContext(Contexto);
   if (!c) throw new Error("@craft/ui: use <ProvedorComandos> em volta da barra/ribbon/paleta.");

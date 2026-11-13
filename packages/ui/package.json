@@ -1,6 +1,6 @@
 {
   "name": "@craft/ui",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "description": "Componentes compartilhados das frentes Craft (Eberick, QiBuilder, Project, WaterGEMS, SAP2000, SewerGEMS, CYPE 3D).",

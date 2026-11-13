@@ -13,7 +13,7 @@
   AreaTrabalho/Arvore/GradePropriedades/BarraStatus, TabelaDados, Prancheta2D, Viewport3D (`@craft/ui/viewport`),
   gráficos (GraficoXY, DiagramaBarra, PerfilLongitudinal, Gantt, DiagramaNos, Sparkline) e Icone.
 - Galeria `apps/galeria`: uma página por peça + **Catálogo** dos 450 componentes atuais + app de exemplo.
-- Critérios de UX: `docs/CRITERIOS.md` (U01–U16). Toda tela nova cumpre os que se aplicam.
+- Critérios de UX: `docs/CRITERIOS.md` (U01–U17). Toda tela nova cumpre os que se aplicam.
 - Rodar: `npm install`, `npm run dev` (http://localhost:5190), `npm test`, `npm run build`.
 
 **O que falta:** ~386 telas próprias de cada programa (diálogos e telas de engenharia como Sapatas,

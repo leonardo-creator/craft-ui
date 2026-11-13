@@ -3,9 +3,10 @@
  * mostra o atalho e põe os recentes primeiro. Resolve o "não acho o botão"
  * sem poluir a barra.
  */
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Icone } from "../base/icones";
-import { useComandos } from "./registro";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
+import { Icone, type NomeIcone } from "../base/icones";
+import { useComandos, useComandosOpcional } from "./registro";
 
 const norm = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
 
@@ -105,56 +106,126 @@ export function PaletaComandos() {
   );
 }
 
-/** Menu de contexto (botão direito) a partir de ids do registro. */
+/** Item avulso do menu (quando o app não usa o registro de comandos). */
+export interface ItemMenu {
+  id: string;
+  rotulo: ReactNode;
+  icone?: NomeIcone;
+  /** Marca o item vigente (ex.: status atual) com ✓. */
+  marcado?: boolean;
+  /** Ação destrutiva — texto vermelho. */
+  perigo?: boolean;
+  habilitado?: boolean;
+  atalho?: string;
+  executar: () => void;
+}
+
+/**
+ * Menu de contexto (botão direito ou botão-gatilho). Duas fontes:
+ *  - `ids` do registro de comandos (precisa de <ProvedorComandos>);
+ *  - `itens` avulsos (não precisa de provedor).
+ * `"-"` = separador. Renderiza em portal no <body> (imune a transform/zoom
+ * do ancestral), cabe na tela, ↑/↓ navegam, Enter executa, Esc fecha.
+ */
 export function MenuContexto({
   x,
   y,
   ids,
+  itens,
   onFechar,
+  rotulo,
 }: {
   x: number;
   y: number;
-  ids: string[];
+  ids?: string[];
+  itens?: (ItemMenu | "-")[];
   onFechar: () => void;
+  /** aria-label do menu */
+  rotulo?: string;
 }) {
-  const { comandos, executar } = useComandos();
+  const ctx = useComandosOpcional();
+  const ref = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState({ x, y });
+
+  const linhas: (ItemMenu | "-")[] =
+    itens ??
+    (ids ?? []).flatMap((id): (ItemMenu | "-")[] => {
+      if (id === "-") return ["-"];
+      const c = ctx?.comandos.get(id);
+      if (!c) return [];
+      return [{ id, rotulo: c.rotulo, icone: c.icone, atalho: c.atalho, habilitado: c.habilitado, executar: () => ctx!.executar(id) }];
+    });
+
+  useLayoutEffect(() => {
+    const r = ref.current?.getBoundingClientRect();
+    if (!r) return;
+    setPos({ x: Math.max(8, Math.min(x, window.innerWidth - r.width - 8)), y: Math.max(8, Math.min(y, window.innerHeight - r.height - 8)) });
+  }, [x, y]);
+
   useEffect(() => {
-    const f = () => onFechar();
-    window.addEventListener("pointerdown", f);
-    window.addEventListener("keydown", f);
+    const fora = (e: PointerEvent) => {
+      if (!ref.current?.contains(e.target as Node)) onFechar();
+    };
+    const tecla = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onFechar();
+    };
+    const t = setTimeout(() => {
+      window.addEventListener("pointerdown", fora, true);
+      ref.current?.querySelector<HTMLElement>("[role=menuitem]:not(:disabled)")?.focus();
+    }, 0);
+    window.addEventListener("keydown", tecla);
+    window.addEventListener("resize", onFechar);
     return () => {
-      window.removeEventListener("pointerdown", f);
-      window.removeEventListener("keydown", f);
+      clearTimeout(t);
+      window.removeEventListener("pointerdown", fora, true);
+      window.removeEventListener("keydown", tecla);
+      window.removeEventListener("resize", onFechar);
     };
   }, [onFechar]);
-  return (
+
+  function navegar(e: React.KeyboardEvent) {
+    if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+    e.preventDefault();
+    const bts = Array.from(ref.current?.querySelectorAll<HTMLElement>("[role=menuitem]:not(:disabled)") ?? []);
+    const i = bts.indexOf(document.activeElement as HTMLElement);
+    bts[(i + (e.key === "ArrowDown" ? 1 : bts.length - 1)) % bts.length]?.focus();
+  }
+
+  const menu = (
     <div
+      ref={ref}
       role="menu"
+      aria-label={rotulo}
+      onKeyDown={navegar}
       className="fixed z-[90] min-w-48 border border-linha bg-painel p-1 shadow-flutuante"
-      style={{ left: x, top: y }}
+      style={{ left: pos.x, top: pos.y }}
       onPointerDown={(e) => e.stopPropagation()}
+      onMouseDown={(e) => e.stopPropagation()}
     >
-      {ids.map((id, n) => {
-        if (id === "-") return <div key={`sep${n}`} className="my-1 border-t border-linha" />;
-        const c = comandos.get(id);
-        if (!c) return null;
+      {linhas.map((it, n) => {
+        if (it === "-") return <div key={`sep${n}`} className="my-1 border-t border-linha" />;
         return (
           <button
-            key={id}
+            key={it.id}
+            type="button"
             role="menuitem"
-            disabled={c.habilitado === false}
+            disabled={it.habilitado === false}
             onClick={() => {
-              executar(id);
+              it.executar();
               onFechar();
             }}
-            className="flex w-full items-center gap-2 px-2 py-1 text-left text-[12px] hover:bg-acento-suave disabled:opacity-40"
+            className={`flex w-full items-center gap-2 px-2 py-1 text-left text-[12px] outline-none hover:bg-acento-suave focus-visible:bg-acento-suave disabled:opacity-40 ${
+              it.perigo ? "text-erro" : "text-texto"
+            } ${it.marcado ? "font-semibold" : ""}`}
           >
-            {c.icone ? <Icone nome={c.icone} tamanho={15} /> : <span className="w-[15px]" />}
-            {c.rotulo}
-            {c.atalho && <span className="ml-auto pl-4 font-mono text-[10px] text-texto-3">{c.atalho}</span>}
+            {it.icone ? <Icone nome={it.icone} tamanho={15} /> : <span className="w-[15px]" />}
+            <span className="flex-1">{it.rotulo}</span>
+            {it.marcado && <Icone nome="ok" tamanho={14} className="text-acento" />}
+            {it.atalho && <span className="ml-auto pl-4 font-mono text-[10px] text-texto-3">{it.atalho}</span>}
           </button>
         );
       })}
     </div>
   );
+  return typeof document === "undefined" ? null : createPortal(menu, document.body);
 }

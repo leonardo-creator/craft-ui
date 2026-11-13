@@ -4,6 +4,7 @@ export * from "./base/icones";
 export * from "./base/parseEngenharia";
 export * from "./base/InputEngenharia";
 export * from "./base/Campos";
+export * from "./base/Avisos";
 export * from "./comandos/registro";
 export * from "./comandos/BotaoComando";
 export * from "./comandos/BarraFerramentas";
